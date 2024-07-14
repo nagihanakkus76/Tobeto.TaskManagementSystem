@@ -1,4 +1,5 @@
 using Core;
+using Core.Application.Extensions;
 using Core.Utilities.Encryption;
 using Core.Utilities.JWT;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,16 +22,9 @@ builder.Services.AddPersistenceService();
 builder.Services.AddCoreServices(tokenOptions);
 
 
+
+
 var getValue = builder.Configuration.GetSection("TokenOptions").GetValue<string>("SecurityKey");
-
-
-builder.Services.AddCors(options => options.AddPolicy("AllowSpecificOrigin",
-              builder =>
-                {
-                     builder.WithMethods("http://localhost:4200")
-                     .AllowAnyHeader()
-                     .AllowAnyMethod();
-                }));
 
 builder.Services.
     AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -47,6 +41,17 @@ builder.Services.
            IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
        };
    });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:4200")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
 
 
 builder.Services.AddSwaggerGen(setup =>
@@ -84,8 +89,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//app.UseHttpsRedirection();
+app.ConfigureExceptionMiddlewareExtensions();
+
 app.UseCors("AllowSpecificOrigin");
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

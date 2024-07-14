@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Core.Application.Exceptions.Types;
+using MediatR;
 using TaskManagementSystem.Application.Repositories;
 using TaskManagementSystem.Domain.Entities;
 
@@ -20,7 +21,7 @@ public class DeleteTaskCommand : IRequest
         public async Task Handle(DeleteTaskCommand request, CancellationToken cancellationToken)
         {
             TaskEntity? task = await _taskRepository.GetAsync(x => x.ID == request.ID);
-            if (task == null) throw new Exception("Silmek istediğiniz veri bulunamadı");
+            if (task == null) throw new CustomException("Silmek istediğiniz veri bulunamadı");
 
             await _taskRepository.DeleteAsync(task);
         }

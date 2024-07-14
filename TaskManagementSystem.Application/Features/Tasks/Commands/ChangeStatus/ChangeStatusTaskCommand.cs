@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Application.Exceptions.Types;
 using MediatR;
 using System.Security.Cryptography.X509Certificates;
 using TaskManagementSystem.Application.Repositories;
@@ -26,7 +27,7 @@ public class ChangeStatusTaskCommand :IRequest<ChangeStatusTaskCommandResponse>
         public async Task<ChangeStatusTaskCommandResponse> Handle(ChangeStatusTaskCommand request, CancellationToken cancellationToken)
         {
             TaskEntity? task = await _taskRepository.GetAsync(x => x.ID == request.ID);
-            if (task == null) throw new Exception("İstenilen kriterlere uygun veri bulunamadı.");
+            if (task == null) throw new CustomException("İstenilen kriterlere uygun veri bulunamadı.");
 
             task.Status = request.Status;
             await _taskRepository.UpdateAsync(task);

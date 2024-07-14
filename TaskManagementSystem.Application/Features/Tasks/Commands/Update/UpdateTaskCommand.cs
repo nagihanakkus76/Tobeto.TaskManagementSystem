@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Application.Exceptions.Types;
 using MediatR;
 using TaskManagementSystem.Application.Repositories;
 using TaskManagementSystem.Domain.Entities;
@@ -27,7 +28,7 @@ public class UpdateTaskCommand : IRequest<UpdateTaskCommandResponse>
         public async Task<UpdateTaskCommandResponse> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
         {
             TaskEntity? task = await _taskRepository.GetAsync(x => x.ID == request.ID);
-            if (task == null) throw new Exception("İstenilen kriterlere uygun veri bulunamadı");
+            if (task == null) throw new CustomException("İstenilen kriterlere uygun veri bulunamadı");
 
             task.ID = request.ID;
             task.Title = request.Title;

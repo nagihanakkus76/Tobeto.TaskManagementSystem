@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Application.Exceptions.Types;
 using Core.Utilities.JWT;
 using MediatR;
 using System.Security.Claims;
@@ -29,7 +30,7 @@ public class LoginCommand : IRequest<AccessToken>
         {
             User? user = await _userRepository.GetAsync(x => x.Username == request.UserName && x.Password == request.Password);
             if (user == null)
-                throw new Exception("Giriş Başarısız");
+                throw new CustomException("Giriş Başarısız");
 
             List<Claim> claims = new()
             {

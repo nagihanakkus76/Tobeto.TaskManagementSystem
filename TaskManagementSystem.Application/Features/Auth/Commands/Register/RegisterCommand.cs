@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Application.Exceptions.Types;
 using MediatR;
 using TaskManagementSystem.Application.Repositories;
 using TaskManagementSystem.Domain.Entities;
@@ -23,7 +24,7 @@ public class RegisterCommand : IRequest<RegisterResponse>
         public async Task<RegisterResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             User? user = await _userRepository.GetAsync(x => x.Username == request.UserName);
-            if (user is not null) throw new Exception("Bu kullanıcı adıyla kayıt olunamaz.");
+            if (user is not null) throw new CustomException("Bu kullanıcı adıyla kayıt olunamaz.");
             
             user = _mapper.Map<User>(request);
             await _userRepository.AddAsync(user);
